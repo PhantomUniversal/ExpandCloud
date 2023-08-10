@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Phantom
 {
-    public class ModualManager : Singleton<ModualManager>
+    public class CortexManager : Singleton<CortexManager>
     {
 
         #region Variable
@@ -20,8 +20,8 @@ namespace Phantom
         private void Update()
         {
             deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
-            Modual.mesc = deltaTime * 1000.0f;
-            Modual.fps = 1.0f / deltaTime;
+            Cortex.mesc = deltaTime * 1000.0f;
+            Cortex.fps = 1.0f / deltaTime;
         }
 
         private void OnGUI()
@@ -32,7 +32,7 @@ namespace Phantom
             style.alignment = TextAnchor.UpperRight;            
             style.fontSize = 40;
             style.normal.textColor = Color.green;                        
-            string text = string.Format("{0:0.0} ms ({1:0.}fps))", Modual.mesc, Modual.fps);
+            string text = string.Format("{0:0.0} ms ({1:0.}fps))", Cortex.mesc, Cortex.fps);
             GUI.Label(rect, text, style);
         }
 

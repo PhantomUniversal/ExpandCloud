@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Phantom
 {
-    public class Modual
+    public class Cortex
     {
 
         /// <summary>
