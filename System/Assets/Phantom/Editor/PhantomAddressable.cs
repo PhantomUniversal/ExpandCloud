@@ -3,7 +3,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using UnityEditor.AddressableAssets.Settings;
@@ -26,12 +25,7 @@ namespace Phantom
             {
                 var setting = AddressableAssetSettingsDefaultObject.Settings;
                 var settingGroups = setting.groups;
-                var settingGroup = setting.DefaultGroup;
-                
-                if (settingGroup.name != groupName)
-                {
-                    settingGroup = settingGroups.Find(x => x.name == groupName);
-                }
+                var settingGroup = settingGroups.Find(x => x.name == groupName);
 
                 if (settingGroup == null)
                 {
@@ -86,6 +80,7 @@ namespace Phantom
                     setting.RemoveGroup(settingGroup);
                 }
 
+                EditorUtility.SetDirty(setting);
                 return true;
             }
             catch (Exception e)
@@ -95,6 +90,8 @@ namespace Phantom
             }
         }
 
+        // 강제성이 동반하는 작업
+        // 백업 후 삭제하는방법을 찾아보는게 좋을듯
         public static bool RemoveAllGroup()
         {
             try
@@ -107,6 +104,7 @@ namespace Phantom
                     setting.RemoveGroup(settingGroups[i]);
                 }
 
+                EditorUtility.SetDirty(setting);
                 return true;
             }
             catch (Exception e)
@@ -141,6 +139,7 @@ namespace Phantom
                     setting.RemoveGroup(settingGroup);
                 }
                 
+                EditorUtility.SetDirty(setting);
                 return true;
             }
             catch (Exception e)
@@ -173,18 +172,51 @@ namespace Phantom
         
         // ==================================================
         // [ Setting ]
+        // * SettingGroup => RemoteGroup 변경이 좋지 않을까?
         // ==================================================
+        public static bool SettingDefalutGroup()
+        {
+            try
+            {
+                var setting = AddressableAssetSettingsDefaultObject.Settings;
+                var settingGroup = setting.DefaultGroup;
+                
+                if (settingGroup != null)
+                {
+                    var bundledAssetGroupSchema = settingGroup.GetSchema<BundledAssetGroupSchema>();
+                    if (bundledAssetGroupSchema == null)
+                    {
+                        bundledAssetGroupSchema = settingGroup.AddSchema<BundledAssetGroupSchema>();
+                    }
+
+                    bundledAssetGroupSchema.BuildPath.SetVariableByName(settingGroup.Settings,
+                        AddressableAssetSettings.kRemoteBuildPath);
+                    bundledAssetGroupSchema.LoadPath.SetVariableByName(settingGroup.Settings,
+                        AddressableAssetSettings.kRemoteLoadPath);
+                }
+            
+                EditorUtility.SetDirty(setting);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+                return false;
+            }
+        }
+        
         public static bool SettingGroup(string groupName)
         {
             try
             {
                 var setting = AddressableAssetSettingsDefaultObject.Settings;
                 var settingGroups = setting.groups;
-                var settingGroup = setting.DefaultGroup;
+                var settingGroup = settingGroups.Find(x => x.name == groupName);
             
-                if (!groupName.Equals("Defalut"))
+                if (settingGroup == null)
                 {
-                    settingGroup = settingGroups.Find(x => x.name == groupName);
+                    Debug.LogError("No search group");
+                    return false;
                 }
 
                 if (settingGroup != null)
@@ -199,6 +231,8 @@ namespace Phantom
                         AddressableAssetSettings.kRemoteBuildPath);
                     bundledAssetGroupSchema.LoadPath.SetVariableByName(settingGroup.Settings,
                         AddressableAssetSettings.kRemoteLoadPath);
+                    
+                    EditorUtility.SetDirty(bundledAssetGroupSchema);
                 }
             
                 EditorUtility.SetDirty(setting);
@@ -235,6 +269,8 @@ namespace Phantom
                         AddressableAssetSettings.kRemoteBuildPath);
                     bundledAssetGroupSchema.LoadPath.SetVariableByName(settingGroup.Settings,
                         AddressableAssetSettings.kRemoteLoadPath);
+                    
+                    EditorUtility.SetDirty(bundledAssetGroupSchema);
                 }
                 
                 EditorUtility.SetDirty(setting);
@@ -267,6 +303,7 @@ namespace Phantom
         #endregion
 
 
+        
         #region Entry
 
         // ==================================================
@@ -327,6 +364,7 @@ namespace Phantom
         
         // ==================================================
         // [ Remove ]
+        // * Entry remove 후에 빈 그룹은 삭제하는게 좋지 않을까?
         // ==================================================
         public static bool RemoveEntry(AddressableAssetEntry entry)
         {
@@ -423,14 +461,37 @@ namespace Phantom
 
         public static AddressableAssetEntry FindEntry(UnityEngine.Object entryTarget)
         {
-            var setting = AddressableAssetSettingsDefaultObject.Settings;
-            var settingEntrys = new List<AddressableAssetEntry>();
-            setting.GetAllAssets(settingEntrys, true);
+            try
+            {
+                var setting = AddressableAssetSettingsDefaultObject.Settings;
+                var settingEntrys = new List<AddressableAssetEntry>();
+                setting.GetAllAssets(settingEntrys, true);
             
-            return settingEntrys.Find(x => x.MainAsset == entryTarget);
+                return settingEntrys.Find(x => x.MainAsset == entryTarget);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+                return null;
+            }
         }
         
         #endregion
+
+
+        public static bool ClearCache()
+        {
+            try
+            {
+                return Caching.ClearCache();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+                return false;
+            }
+        }
+        
     }
 }
 
