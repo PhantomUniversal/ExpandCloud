@@ -1,18 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Phantom
 {
     public class CortexManager : Singleton<CortexManager>
     {
-
         #region Variable
 
-        private float deltaTime = 0.0f;
+        private float deltaTime;
 
         #endregion
-
 
 
         #region Lifecycle
@@ -27,17 +23,15 @@ namespace Phantom
         private void OnGUI()
         {
             int w = Screen.width, h = Screen.height;
-            GUIStyle style = new GUIStyle();            
-            Rect rect = new Rect(0, 0, w, h * 2 / 100);            
-            style.alignment = TextAnchor.UpperRight;            
+            var style = new GUIStyle();
+            var rect = new Rect(0, 0, w, h * 2 / 100);
+            style.alignment = TextAnchor.UpperRight;
             style.fontSize = 40;
-            style.normal.textColor = Color.green;                        
-            string text = string.Format("{0:0.0} ms ({1:0.}fps))", Cortex.mesc, Cortex.fps);
+            style.normal.textColor = Color.green;
+            var text = string.Format("{0:0.0} ms ({1:0.}fps))", Cortex.mesc, Cortex.fps);
             GUI.Label(rect, text, style);
         }
 
         #endregion
-
     }
-
 }
