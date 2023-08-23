@@ -1,3 +1,9 @@
+/*
+ * day : 2023-08-21
+ * write : phantom
+ * email : chho1365@gmail.com
+ */
+
 #if UNITY_EDITOR
 
 using System;
