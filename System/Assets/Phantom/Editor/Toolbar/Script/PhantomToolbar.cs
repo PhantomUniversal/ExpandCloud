@@ -75,7 +75,7 @@ namespace Phantom
                     menu.AddSeparator("");   
                     menu.AddItem(new GUIContent("Option/Tag/Install"), false, PhantomTag.InstallClick);
                     menu.AddItem(new GUIContent("Option/Tag/UnInstall"), false, PhantomTag.UnInstallClick);
-                    menu.AddSeparator($"Install/");
+                    menu.AddSeparator($"");
                     menu.AddItem(new GUIContent("Option/Layer/Install"), false, PhantomLayer.InstallClick);
                     menu.AddItem(new GUIContent("Option/Layer/UnInstall"), false, PhantomLayer.UnInstallClick);
                     menu.DropDown(rect);
