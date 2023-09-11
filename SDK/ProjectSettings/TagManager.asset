@@ -13,22 +13,22 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Obstruction
+  - Interactive
+  - Point
+  - Waypoint
+  - Map
+  - Gate
+  - Teleport
+  - Portal
+  - Player
+  - User
+  - Friendly
+  - Enemy
+  - Boss
+  - Npc
+  - Pet
+  - Riding
   - 
   - 
   - 
