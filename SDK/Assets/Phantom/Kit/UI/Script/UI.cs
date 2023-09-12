@@ -23,8 +23,20 @@ namespace Phantom
 
 
 
-        #region Check
+        #region Return
 
+        public static bool Clear()
+        {
+            if (containerUse)
+            {
+                container.Clear();
+                containerUse = false;
+                return true;
+            }
+
+            return false;
+        }
+        
         public static bool Use()
         {
             return containerUse;
@@ -34,7 +46,7 @@ namespace Phantom
         {
             return container.Count;
         }
-
+        
         #endregion
 
 
@@ -78,16 +90,7 @@ namespace Phantom
             }
                 
         }
-
-        public static void ClearCallback()
-        {
-            if (containerUse)
-            {
-                container.Clear();
-                containerUse = false;
-            }
-        }
-
+        
         public static void InitCallback()
         {
             if (containerUse)
