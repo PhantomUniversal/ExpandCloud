@@ -4,6 +4,7 @@ namespace Phantom
 {
     public class UIResolution : MonoBehaviour
     {
+        
         #region Lifecycle
 
         private void Awake()
@@ -31,6 +32,8 @@ namespace Phantom
 
         #endregion
 
+        
+        
         #region Variable
 
         [SerializeField] private Camera resolutionCamera;
@@ -40,5 +43,6 @@ namespace Phantom
         [SerializeField] private int resolutionFrameRate;
 
         #endregion
+        
     }
 }
