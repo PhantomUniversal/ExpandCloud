@@ -112,6 +112,18 @@ namespace Phantom
             return true;
         }
 
+        public static string FindCode(object callback)
+        {
+            var target = callback as IUICallback;
+            if (target is null)
+                return "";
+
+            if (!container.ContainsValue(target))
+                return "";
+
+            return container.FirstOrDefault(x => x.Value == target).Key;
+        }
+        
         public static IUICallback FindCallback(string uniqueCode)
         {
             return container[uniqueCode];
