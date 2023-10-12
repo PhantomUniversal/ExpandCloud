@@ -13,104 +13,72 @@ namespace Phantom
     public class UI
     {
 
-        #region Variable
+        #region CALLBACK
 
-        internal static bool containerUse;
-
-        internal static Dictionary<string, IUICallback> container;        
-
-        #endregion
-
-
-
-        #region Return
-
-        public static bool Use => containerUse;
-
-        public static int Count => container.Count;
+        // ==================================================
+        // [ Variable ]
+        // ==================================================
+        private static Dictionary<string, IUICallback> _container;
         
-        #endregion
-
-
         
-        #region Method
+        // ==================================================
+        // [ Return ]
+        // ==================================================
+        public static bool IsContainer => _container != null && _container.Count != 0;
 
-        public static bool AddCallback(object callback) => AddCallback(callback, "");
+        public static int ContainerCount => _container.Count;
+        
+        
+        // ==================================================
+        // [ Utility ]
+        // ==================================================
+        public static bool AddCallback(object callback) => AddCallback(callback, null); 
         public static bool AddCallback(object callback, string uniqueCode)
         {
-            var target = callback as IUICallback;
-            if (target is null)
+            if (callback is not IUICallback target) 
                 return false;
 
-            container ??= new Dictionary<string, IUICallback>();
-            uniqueCode = string.IsNullOrEmpty(uniqueCode) ? Guid.NewGuid().ToString() : uniqueCode;
-            container.Add(uniqueCode, target);
-            
-            if (container is not null && container.Count > 0)
-                containerUse = true;
+            _container ??= new Dictionary<string, IUICallback>();
 
-            return true;
+            uniqueCode = string.IsNullOrEmpty(uniqueCode) ? Guid.NewGuid().ToString() : uniqueCode;
+            return _container.TryAdd(uniqueCode, target);
         }
 
         public static bool RemoveCallback(string uniqueCode)
         {
-            if (container is null || container.Count == 0)
-            {
-                containerUse = false;
+            if (_container == null || _container.Count == 0)
                 return false;
-            }
 
-            if (!container.ContainsKey(uniqueCode))
+            var callback = _container[uniqueCode];
+            if (callback == null)
                 return false;
-            
-            var result = container.Remove(uniqueCode);
-            if (result)
-            {
-                if (container.Count == 0)
-                    containerUse = false;
-            }
-
-            return true;
+                
+            return RemoveCallback(callback, uniqueCode);
         }
         
-        public static bool RemoveCallback(object callback)
+        public static bool RemoveCallback(object callback, string uniqueCode)
         {
-            var target = callback as IUICallback;
-            if (target is null)
+            if (callback is not IUICallback target) 
                 return false;
 
-            if (container is null || container.Count == 0)
-            {
-                containerUse = false;
-                return false;
-            }
-
-            if (!container.ContainsValue(target))
+            if (_container == null || _container.Count == 0)
                 return false;
 
-            var key = container.FirstOrDefault(x => x.Value == target).Key;
-            var result = container.Remove(key);
-            if (result)
-            {
-                if (container.Count == 0)
-                    containerUse = false;
-            }
-
-            return true;
+            uniqueCode = string.IsNullOrEmpty(uniqueCode)
+                ? _container.FirstOrDefault(x => x.Value == target).Key : uniqueCode;
+            return _container.Remove(uniqueCode);
         }
-        
+
         public static bool ClearCallback()
         {
-            if (!containerUse)
-            {
+            if (_container == null || _container.Count == 0)
                 return false;
-            }
             
-            container.Clear();
-            containerUse = false;
-
+            _container.Clear();
             return true;
         }
+
+        public static IUICallback FindCallback(string uniqueCode) => _container[uniqueCode];
 
         public static string FindCode(object callback)
         {
@@ -118,23 +86,18 @@ namespace Phantom
             if (target is null)
                 return "";
 
-            if (!container.ContainsValue(target))
+            if (!_container.ContainsValue(target))
                 return "";
 
-            return container.FirstOrDefault(x => x.Value == target).Key;
-        }
-        
-        public static IUICallback FindCallback(string uniqueCode)
-        {
-            return container[uniqueCode];
+            return _container.FirstOrDefault(x => x.Value == target).Key;
         }
         
         public static bool EventCallback(UICallbackType type, string uniqueCode)
         {
-            if (!container.ContainsKey(uniqueCode))
+            if (!_container.ContainsKey(uniqueCode))
                 return false;
             
-            var callback = container[uniqueCode];
+            var callback = _container[uniqueCode];
             switch (type)
             {
                 case UICallbackType.Init:
@@ -151,10 +114,10 @@ namespace Phantom
         
         public static bool InitCallback()
         {
-            if (!containerUse)
+            if (!IsContainer)
                 return false;
             
-            foreach (var callback in container.Values)
+            foreach (var callback in _container.Values)
             {
                 callback.OnInitCallback();
             }
@@ -164,17 +127,17 @@ namespace Phantom
         
         public static bool UpdateCallback()
         {
-            if (containerUse)
+            if (IsContainer)
                 return false;
             
-            foreach (var callback in container.Values)
+            foreach (var callback in _container.Values)
             {
                 callback.OnUpdateCallback();
             }
 
             return true;
         }
-
+        
         #endregion
         
     }   
