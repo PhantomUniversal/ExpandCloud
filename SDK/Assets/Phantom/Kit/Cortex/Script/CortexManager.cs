@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Phantom
 {
-    public class CortexManager : Singleton<CortexManager>
+    public class CortexManager : GenericSingleton<CortexManager>
     {
         #region Variable
 
