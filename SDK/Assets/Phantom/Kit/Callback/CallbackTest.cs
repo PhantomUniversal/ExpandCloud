@@ -23,12 +23,7 @@
             
         }
 
-        protected override void OnMessage(string message)
-        {
-            
-        }
-
-        protected override void OnUpdate()
+        protected override void OnEvent()
         {
             
         }

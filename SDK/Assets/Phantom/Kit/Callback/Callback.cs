@@ -48,7 +48,11 @@ namespace Phantom.Callback
             callbackOption ??= new CallbackOption();
             callbackOption.Uid = string.IsNullOrEmpty(callbackOption.Uid) ? Guid.NewGuid().ToString() : callbackOption.Uid;
 
-            return _containers.TryAdd(callbackOption, target);
+            var result = _containers.TryAdd(callbackOption, target);
+            if (!result) return false;
+            
+            target.OnConnectCallback(callbackOption);
+            return true;
         }
 
         public static bool Remove(string callbackUid)
@@ -61,8 +65,9 @@ namespace Phantom.Callback
             {
                 return false;
             }
+            var callback = _containers[callbackOption];
             
-            return Remove(callbackOption);
+            return Remove(callbackOption, callback);
         }
 
         public static bool Remove(object callback)
@@ -74,12 +79,17 @@ namespace Phantom.Callback
                 return false;
             
             var callbackOption = _containers.FirstOrDefault(x => x.Value == target).Key;
-            return Remove(callbackOption);
+            return Remove(callbackOption, target);
         }
 
-        private static bool Remove(CallbackOption callbackOption)
+        private static bool Remove(CallbackOption callbackOption, ICallback callback)
         { 
-            return _containers.Remove(callbackOption);
+            var result = _containers.Remove(callbackOption);
+            if (!result)
+                return false;
+            
+            callback.OnDisConnectCallback();
+            return true;
         }
 
         // public static void CategoryRemove()
@@ -91,12 +101,15 @@ namespace Phantom.Callback
         {
             if (_containers is null || _containers.Count == 0)
                 return false;
-            
-            _containers.Clear();
-            if (enable)
+
+            foreach (var callback in _containers.Values)
             {
-                _containers = null;
+                callback.OnDisConnectCallback();
             }
+            _containers.Clear();
+            
+            if (enable)
+                _containers = null;
 
             return true;
         }
@@ -109,9 +122,7 @@ namespace Phantom.Callback
             foreach (var callbackOption in _containers.Keys)
             {
                 if (callbackOption.Uid == callbackUid)
-                {
                     return _containers[callbackOption];
-                }
             }
 
             return null;
@@ -147,9 +158,7 @@ namespace Phantom.Callback
             foreach (var callbackOption in _containers.Keys)
             {
                 if (callbackOption.Uid == callbackUid)
-                {
                     return true;
-                }
             }
 
             return false;
@@ -161,30 +170,30 @@ namespace Phantom.Callback
 
         #region METHOD
 
-        public static void UpdateCallback(string callbackUid)
+        public static void EventCallback(string callbackUid)
         {
             if (_containers is null || _containers.Count == 0)
                 return;
             
-            (_containers.FirstOrDefault(x => x.Key.Uid == callbackUid).Value)?.OnUpdateCallback();
+            (_containers.FirstOrDefault(x => x.Key.Uid == callbackUid).Value)?.OnEventCallback();
         }
 
-        public static void UpdateCallback(object callback)
+        public static void EventCallback(object callback)
         {
             if (callback is not ICallback target)
                 return;
             
-            target.OnUpdateCallback();
+            target.OnEventCallback();
         }
 
-        public static void AllUpdateCallback()
+        public static void AllEventCallback()
         {
             if (_containers is null || _containers.Count == 0)
                 return;
             
             foreach (var callback in _containers.Values)
             {
-                callback.OnUpdateCallback();
+                callback.OnEventCallback();
             }
         }
         

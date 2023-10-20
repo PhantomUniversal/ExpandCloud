@@ -9,19 +9,24 @@
     {
 
         /// <summary>
-        /// 
+        /// Callback add callback
         /// </summary>
-        void OnOptionCallback(CallbackOption option);
+        void OnConnectCallback(CallbackOption option);
         
         /// <summary>
-        /// 
+        /// Callback remove callback
         /// </summary>
-        void OnMessageCallback(string message);
+        void OnDisConnectCallback();
+
+        /// <summary>
+        /// Error callback => Analytics => Error callback? or Debug => Error callback dev ???
+        /// </summary>
+        void OnErrorCallback();
         
         /// <summary>
-        /// 
+        /// Event Callback
         /// </summary>
-        void OnUpdateCallback();
+        void OnEventCallback();
 
     }
 }

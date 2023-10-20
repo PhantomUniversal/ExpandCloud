@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Phantom.Callback
 {
@@ -16,7 +15,7 @@ namespace Phantom.Callback
 
 
 
-        #region MyRegion
+        #region OVERRIDE
 
         protected abstract void OnConnect();
         
@@ -24,9 +23,7 @@ namespace Phantom.Callback
 
         protected abstract void OnError();
         
-        protected abstract void OnMessage(string message);
-        
-        protected abstract void OnUpdate();
+        protected abstract void OnEvent();
 
         #endregion
         
@@ -41,20 +38,12 @@ namespace Phantom.Callback
                 Uid = callbackUid
             };
             
-            var result = Callback.Add(this, option);
-            if(result)
-                OnConnect();
-            else
-                OnError();
+            Callback.Add(this, option);
         }
 
         private void OnDisable()
         {
-            var result = Callback.Remove(this);
-            if (result)
-                OnDisConnect();
-            else
-                OnError();
+            Callback.Remove(this);
         }
 
         #endregion
@@ -66,21 +55,27 @@ namespace Phantom.Callback
         // ==================================================
         // [ ICallback ]
         // ==================================================
-        public void OnOptionCallback(CallbackOption option)
-        {
+        
+        public void OnConnectCallback(CallbackOption option)
+        { 
             CurrentCallbackUid = option is null ? "" : option.Uid;
         }
-        
-        public void OnMessageCallback(string message)
+
+        public void OnDisConnectCallback()
         {
-            OnMessage(message);
-        }
-        
-        public void OnUpdateCallback()
-        {
-            OnUpdate();
+            CurrentCallbackUid = string.Empty;
         }
 
+        public void OnErrorCallback()
+        {
+            
+        }
+
+        public void OnEventCallback()
+        {
+            
+        }
+        
         #endregion
         
     }
