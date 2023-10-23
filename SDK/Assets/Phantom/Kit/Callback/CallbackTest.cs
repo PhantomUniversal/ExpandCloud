@@ -1,4 +1,6 @@
-﻿namespace Phantom.Callback
+﻿using UnityEngine;
+
+namespace Phantom.Callback
 {
     public class CallbackTest : CallbackBase
     {
@@ -8,12 +10,12 @@
         // ==================================================
         // [ CallbackBase ]
         // ==================================================
-        protected override void OnConnect()
+        protected override void OnOpen()
         {
-            
+            Debug.Log(uid);
         }
 
-        protected override void OnDisConnect()
+        protected override void OnClose()
         {
             
         }

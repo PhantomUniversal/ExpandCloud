@@ -23,7 +23,7 @@ namespace Phantom
                         {
                             var obj = new GameObject();
                             _instance = obj.AddComponent<T>();
-                            obj.name = typeof(T).ToString();
+                            obj.name = typeof(T).Name;
                         }
                     }
 

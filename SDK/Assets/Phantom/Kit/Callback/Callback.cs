@@ -8,18 +8,12 @@ namespace Phantom.Callback
     {
 
         #region VARIABLE
+        
+        public static Dictionary<CallbackOption, ICallback> Containers { get; private set; }
+        
+        public static bool Use => Containers != null && Containers.Count != 0;
 
-        private static Dictionary<CallbackOption, ICallback> _containers;
-
-        #endregion
-
-
-
-        #region RETURN
-
-        public static bool Use => _containers != null && _containers.Count != 0;
-
-        public static int Count => _containers.Count;
+        public static int Count => Containers.Count;
 
         #endregion
 
@@ -35,7 +29,7 @@ namespace Phantom.Callback
                 return false;
 
             // callbacks null is → new callback system
-            _containers ??= new Dictionary<CallbackOption, ICallback>();
+            Containers ??= new Dictionary<CallbackOption, ICallback>();
 
 #if UNITY_EDITOR
             if (CallbackManager.Instance == null)
@@ -48,24 +42,25 @@ namespace Phantom.Callback
             callbackOption ??= new CallbackOption();
             callbackOption.Uid = string.IsNullOrEmpty(callbackOption.Uid) ? Guid.NewGuid().ToString() : callbackOption.Uid;
 
-            var result = _containers.TryAdd(callbackOption, target);
-            if (!result) return false;
+            var result = Containers.TryAdd(callbackOption, target);
+            if (!result) 
+                return false;
             
-            target.OnConnectCallback(callbackOption);
+            target.OnOpenCallback();
             return true;
         }
 
         public static bool Remove(string callbackUid)
         {
-            if (_containers is null || _containers.Count == 0)
+            if (Containers is null || Containers.Count == 0)
                 return false;
 
-            var callbackOption = _containers.FirstOrDefault(x => x.Key.Uid == callbackUid).Key;
+            var callbackOption = Containers.FirstOrDefault(x => x.Key.Uid == callbackUid).Key;
             if (callbackOption is null)
             {
                 return false;
             }
-            var callback = _containers[callbackOption];
+            var callback = Containers[callbackOption];
             
             return Remove(callbackOption, callback);
         }
@@ -75,54 +70,63 @@ namespace Phantom.Callback
             if (callback is not ICallback target)
                 return false;
             
-            if (_containers is null || _containers.Count == 0 || !_containers.ContainsValue(target))
+            if (Containers is null || Containers.Count == 0 || !Containers.ContainsValue(target))
                 return false;
             
-            var callbackOption = _containers.FirstOrDefault(x => x.Value == target).Key;
+            var callbackOption = Containers.FirstOrDefault(x => x.Value == target).Key;
             return Remove(callbackOption, target);
         }
 
         private static bool Remove(CallbackOption callbackOption, ICallback callback)
         { 
-            var result = _containers.Remove(callbackOption);
+            var result = Containers.Remove(callbackOption);
             if (!result)
                 return false;
             
-            callback.OnDisConnectCallback();
+            callback.OnCloseCallback();
             return true;
         }
 
-        // public static void CategoryRemove()
-        // {
-        //     
-        // }
+        public static bool CategoryRemove(string category)
+        {
+            if (Containers is null || Containers.Count == 0)
+                return false;
+
+            foreach (var option in Containers.Keys)
+            {
+                if (option.Category.Equals(category))
+                    Containers.Remove(option);
+            }
+
+            return true;
+        }
         
         public static bool Clear(bool enable = false)
         {
-            if (_containers is null || _containers.Count == 0)
+            if (Containers is null || Containers.Count == 0)
                 return false;
 
-            foreach (var callback in _containers.Values)
+            foreach (var callback in Containers.Values)
             {
-                callback.OnDisConnectCallback();
+                callback.OnCloseCallback();
             }
-            _containers.Clear();
+            Containers.Clear();
             
             if (enable)
-                _containers = null;
+                Containers = null;
 
             return true;
         }
 
         public static ICallback Find(string callbackUid)
         {
-            if (_containers is null || _containers.Count == 0)
+            if (Containers is null || Containers.Count == 0)
                 return null;
             
-            foreach (var callbackOption in _containers.Keys)
+            foreach (var callbackOption in Containers.Keys)
             {
                 if (callbackOption.Uid == callbackUid)
-                    return _containers[callbackOption];
+                    return Containers[callbackOption];
             }
 
             return null;
@@ -133,7 +137,7 @@ namespace Phantom.Callback
             if (callback is not ICallback target)
                 return false;
 
-            if (_containers is null || _containers.Count == 0 || !_containers.ContainsValue(target))
+            if (Containers is null || Containers.Count == 0 || !Containers.ContainsValue(target))
                 return false;
 
             return true;
@@ -144,18 +148,18 @@ namespace Phantom.Callback
             if (callback is not ICallback target)
                 return "";
             
-            if (_containers is null || _containers.Count == 0 || !_containers.ContainsValue(target))
+            if (Containers is null || Containers.Count == 0 || !Containers.ContainsValue(target))
                 return "";
 
-            return _containers.FirstOrDefault(x => x.Value == target).Key.Uid;
+            return Containers.FirstOrDefault(x => x.Value == target).Key.Uid;
         }
 
         public static bool ExistUid(string callbackUid)
         {
-            if (_containers is null || _containers.Count == 0)
+            if (Containers is null || Containers.Count == 0)
                 return false;
 
-            foreach (var callbackOption in _containers.Keys)
+            foreach (var callbackOption in Containers.Keys)
             {
                 if (callbackOption.Uid == callbackUid)
                     return true;
@@ -172,10 +176,10 @@ namespace Phantom.Callback
 
         public static void EventCallback(string callbackUid)
         {
-            if (_containers is null || _containers.Count == 0)
+            if (Containers is null || Containers.Count == 0)
                 return;
             
-            (_containers.FirstOrDefault(x => x.Key.Uid == callbackUid).Value)?.OnEventCallback();
+            (Containers.FirstOrDefault(x => x.Key.Uid == callbackUid).Value)?.OnEventCallback();
         }
 
         public static void EventCallback(object callback)
@@ -186,12 +190,24 @@ namespace Phantom.Callback
             target.OnEventCallback();
         }
 
-        public static void AllEventCallback()
+        public static void CategoryEventCallback(string category)
         {
-            if (_containers is null || _containers.Count == 0)
+            if (Containers is null || Containers.Count == 0)
                 return;
             
-            foreach (var callback in _containers.Values)
+            foreach (var option in Containers.Keys)
+            {
+                if (option.Category == category)
+                    Containers[option].OnEventCallback();
+            }
+        }
+        
+        public static void AllEventCallback()
+        {
+            if (Containers is null || Containers.Count == 0)
+                return;
+            
+            foreach (var callback in Containers.Values)
             {
                 callback.OnEventCallback();
             }

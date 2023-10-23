@@ -7,9 +7,8 @@ namespace Phantom.Callback
 
         #region VARIABLE
 
-        [Header("Callback")]
-        [SerializeField] protected string callbackUid;
-        protected string CurrentCallbackUid { get; private set; }
+        [Header("[ Callback ]")]
+        [HideInInspector] public string uid;
         
         #endregion
 
@@ -17,9 +16,9 @@ namespace Phantom.Callback
 
         #region OVERRIDE
 
-        protected abstract void OnConnect();
+        protected abstract void OnOpen();
         
-        protected abstract void OnDisConnect();
+        protected abstract void OnClose();
 
         protected abstract void OnError();
         
@@ -30,12 +29,12 @@ namespace Phantom.Callback
         
         
         #region LIFECLCYE
-
+        
         private void OnEnable()
         {
             CallbackOption option = new CallbackOption()
             {
-                Uid = callbackUid
+                Uid = this.uid
             };
             
             Callback.Add(this, option);
@@ -56,14 +55,14 @@ namespace Phantom.Callback
         // [ ICallback ]
         // ==================================================
         
-        public void OnConnectCallback(CallbackOption option)
-        { 
-            CurrentCallbackUid = option is null ? "" : option.Uid;
+        public void OnOpenCallback()
+        {
+            uid = Callback.FindUid(this);
         }
 
-        public void OnDisConnectCallback()
+        public void OnCloseCallback()
         {
-            CurrentCallbackUid = string.Empty;
+            
         }
 
         public void OnErrorCallback()

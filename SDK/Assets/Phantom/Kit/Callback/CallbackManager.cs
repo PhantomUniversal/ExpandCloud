@@ -13,6 +13,7 @@ namespace Phantom.Callback
 #if UNITY_EDITOR
             Debug.Log("Init complete");
 #endif
+            
         }
 
         #endregion

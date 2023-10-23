@@ -6,6 +6,8 @@ namespace Phantom.Callback
     public class CallbackOption
     {
         
+        public string Name { get; set; }
+        
         /// <summary>
         /// 
         /// </summary>

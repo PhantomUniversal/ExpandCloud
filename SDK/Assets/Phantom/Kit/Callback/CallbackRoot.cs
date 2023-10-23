@@ -9,14 +9,14 @@
     {
 
         /// <summary>
-        /// Callback add callback
+        /// Add interface return callback
         /// </summary>
-        void OnConnectCallback(CallbackOption option);
+        void OnOpenCallback();
         
         /// <summary>
-        /// Callback remove callback
+        /// Remove interface return callback
         /// </summary>
-        void OnDisConnectCallback();
+        void OnCloseCallback();
 
         /// <summary>
         /// Error callback => Analytics => Error callback? or Debug => Error callback dev ???
@@ -24,7 +24,7 @@
         void OnErrorCallback();
         
         /// <summary>
-        /// Event Callback
+        /// event callback
         /// </summary>
         void OnEventCallback();
 
