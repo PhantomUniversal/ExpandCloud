@@ -1,7 +1,6 @@
 /*
- * day : 2023-08-17
- * write : phantom
- * email : chho1365@gmail.com
+ 1. Toolbar add and remove 기능
+    => Custom  
  */
 
 #if UNITY_EDITOR

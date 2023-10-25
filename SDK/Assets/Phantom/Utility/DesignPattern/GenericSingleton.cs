@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Phantom
 {
-    public class GenericSingleton<T> : MonoBehaviour where T : MonoBehaviour
+    public abstract class GenericSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         private static bool _enable;
         private static readonly object _lock = new();
@@ -31,21 +31,31 @@ namespace Phantom
                 }
             }
         }
-
-        private void Awake()
+        
+        private void Start()
         {
             DontDestroyOnLoad(gameObject);
+            OnOpen();
         }
 
         private void OnDestroy()
         {
             _instance = null;
             _enable = false;
+            OnClose();
         }
         
         private void OnApplicationQuit()
         {
             _enable = true;
         }
+        
+        #region Override
+        
+        protected abstract void OnOpen();
+        
+        protected abstract void OnClose();
+
+        #endregion
     }
 }

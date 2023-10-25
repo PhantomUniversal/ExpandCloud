@@ -33,5 +33,15 @@ namespace Phantom
         }
 
         #endregion
+
+        protected override void OnOpen()
+        {
+            
+        }
+
+        protected override void OnClose()
+        {
+            
+        }
     }
 }
