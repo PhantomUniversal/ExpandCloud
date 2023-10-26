@@ -99,21 +99,11 @@ namespace Phantom.Callback
             // ==================================================
             // [ Layout ]
             // ==================================================
+            CallbackManager callback = (CallbackManager)target;
+            
             EditorGUI.BeginChangeCheck();
             
-            CallbackManager callback = (CallbackManager)target;
-            GUILayout.BeginVertical(GUI.skin.GetStyle("HelpBox"), GUILayout.ExpandWidth(true), GUILayout.Height(200f));
-            {
-                GUILayout.Space(5f);
-
-                
-                
-                GUILayout.Space(5f);
-            }
-            GUILayout.EndVertical();
-
-            // Foldout 
-            Rect callbackListRect = EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.ExpandWidth(true), GUILayout.Height(20));
+            Rect callbackFoldoutRect = EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.Height(20));
             {
                 _callbackListEnable = EditorGUILayout.Foldout(_callbackListEnable, "Callback", true, PhantomGUIStyle.FoldoutStyle);
                 // Rect callbackAddRect = new Rect(callbackFoldoutRect.xMax, callbackFoldoutRect.y, callbackFoldoutRect.height, callbackFoldoutRect.height);
@@ -121,57 +111,60 @@ namespace Phantom.Callback
                 // {
                 //     Debug.Log("Call");
                 // }
-            }
-            EditorGUILayout.EndVertical();
-            Rect callbackListBackgroundRect = EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.Height(20));
-            {
-                PhantomEditorGUI.DrawSolidRect(callbackListBackgroundRect.AlignTop(1f), PhantomColor.SolidColor);
-                PhantomEditorGUI.DrawSolidRect(callbackListBackgroundRect, PhantomColor.BoxBackgroundColor);
                 
-                if (_callbackListEnable)
-                {
-                    Rect tagRect = EditorGUILayout.BeginHorizontal();
-                    {
-                        tagRect.height = callbackListRect.height;
-                        PhantomEditorGUI.DrawSolidRect(tagRect.AlignLeft(1f), PhantomColor.SolidColor);
-                        PhantomEditorGUI.DrawSolidRect(tagRect.AlignRight(1f), PhantomColor.SolidColor);
-                        
-                        Rect keyRect = new Rect(callbackListRect.xMin, callbackListRect.yMax, callbackListRect.width * 0.5f, callbackListRect.height);
-                        Rect valueRect = new Rect(callbackListRect.xMin + (callbackListRect.width * 0.5f), callbackListRect.yMax, callbackListRect.width * 0.5f, callbackListRect.height);
-                        if (Event.current.type == EventType.Repaint)
-                        {
-                            GUI.Label(keyRect, _callbackListKeyLabel, PhantomGUIStyle.LabelCenter);
-                            GUI.Label(valueRect, _callbackListKeyLabel, PhantomGUIStyle.LabelCenter);
-                            PhantomEditorGUI.DrawSolidRect(tagRect.AlignBottom(1f), PhantomColor.SolidColor);
-                        }
-                        
-                        // EditorGUILayout.LabelField("Key", PhantomGUIStyle.LabelBoxStyle);
-                        // EditorGUILayout.LabelField("Value", PhantomGUIStyle.LabelBoxStyle);
-                    }
-                    EditorGUILayout.EndHorizontal();
-
-                    // if (Callback.Use)
-                    // {
-                    //     GUILayout.Space(4f);
-                    //     
-                    //     foreach (var option in Callback.Containers.Keys)
-                    //     {
-                    //         if (GUILayout.Button(option.Uid, PhantomGUIStyle.ButtonStyle, GUILayout.ExpandWidth(true), GUILayout.Height(40f)))
-                    //         {
-                    //             //_uid = option.Uid;
-                    //             Debug.Log($"UID : {option.Uid}\n Category : {option.Category}");
-                    //         }
-                    //     }
-                    //     
-                    //     GUILayout.Space(4f);
-                    // }
-                    // else
-                    // {
-                    //     EditorGUILayout.HelpBox("Callback is not exists", MessageType.Info);
-                    // }
-                }
+                
             }
             EditorGUILayout.EndVertical();
+            
+            // Rect callbackListBackgroundRect = EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.Height(20));
+            // {
+            //     PhantomEditorGUI.DrawSolidRect(callbackListBackgroundRect.AlignTop(1f), PhantomColor.SolidColor);
+            //     PhantomEditorGUI.DrawSolidRect(callbackListBackgroundRect, PhantomColor.BoxBackgroundColor);
+            //     
+            //     if (_callbackListEnable)
+            //     {
+            //         Rect tagRect = EditorGUILayout.BeginHorizontal();
+            //         {
+            //             tagRect.height = callbackListRect.height;
+            //             PhantomEditorGUI.DrawSolidRect(tagRect.AlignLeft(1f), PhantomColor.SolidColor);
+            //             PhantomEditorGUI.DrawSolidRect(tagRect.AlignRight(1f), PhantomColor.SolidColor);
+            //             
+            //             Rect keyRect = new Rect(callbackListRect.xMin, callbackListRect.yMax, callbackListRect.width * 0.5f, callbackListRect.height);
+            //             Rect valueRect = new Rect(callbackListRect.xMin + (callbackListRect.width * 0.5f), callbackListRect.yMax, callbackListRect.width * 0.5f, callbackListRect.height);
+            //             if (Event.current.type == EventType.Repaint)
+            //             {
+            //                 GUI.Label(keyRect, _callbackListKeyLabel, PhantomGUIStyle.LabelCenter);
+            //                 GUI.Label(valueRect, _callbackListKeyLabel, PhantomGUIStyle.LabelCenter);
+            //                 PhantomEditorGUI.DrawSolidRect(tagRect.AlignBottom(1f), PhantomColor.SolidColor);
+            //             }
+            //             
+            //             // EditorGUILayout.LabelField("Key", PhantomGUIStyle.LabelBoxStyle);
+            //             // EditorGUILayout.LabelField("Value", PhantomGUIStyle.LabelBoxStyle);
+            //         }
+            //         EditorGUILayout.EndHorizontal();
+            //
+            //         // if (Callback.Use)
+            //         // {
+            //         //     GUILayout.Space(4f);
+            //         //     
+            //         //     foreach (var option in Callback.Containers.Keys)
+            //         //     {
+            //         //         if (GUILayout.Button(option.Uid, PhantomGUIStyle.ButtonStyle, GUILayout.ExpandWidth(true), GUILayout.Height(40f)))
+            //         //         {
+            //         //             //_uid = option.Uid;
+            //         //             Debug.Log($"UID : {option.Uid}\n Category : {option.Category}");
+            //         //         }
+            //         //     }
+            //         //     
+            //         //     GUILayout.Space(4f);
+            //         // }
+            //         // else
+            //         // {
+            //         //     EditorGUILayout.HelpBox("Callback is not exists", MessageType.Info);
+            //         // }
+            //     }
+            // }
+            // EditorGUILayout.EndVertical();
             
             
             if (EditorGUI.EndChangeCheck())
