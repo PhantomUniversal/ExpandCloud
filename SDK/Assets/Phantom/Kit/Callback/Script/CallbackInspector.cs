@@ -105,7 +105,7 @@ namespace Phantom.Callback
             
             Rect callbackFoldoutRect = EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.Height(20));
             {
-                _callbackListEnable = EditorGUILayout.Foldout(_callbackListEnable, "Callback", true, PhantomGUIStyle.FoldoutStyle);
+                _callbackListEnable = PhantomEditorGUI.Foldout(_callbackListEnable, "Callback");
                 // Rect callbackAddRect = new Rect(callbackFoldoutRect.xMax, callbackFoldoutRect.y, callbackFoldoutRect.height, callbackFoldoutRect.height);
                 // if (GUI.Button(callbackAddRect, "+", PhantomGUIStyle.FieldButtonStyle))
                 // {
