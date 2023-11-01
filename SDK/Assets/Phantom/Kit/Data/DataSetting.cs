@@ -5,6 +5,6 @@ namespace Phantom
 {
     public class DataSetting : ScriptableObject
     {
-        public List<DataTable> list = new List<DataTable>();
+        public List<DataTable> list = new ();
     }
 }

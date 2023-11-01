@@ -38,10 +38,28 @@ namespace Phantom
         
         #region METHOD
 
-        public bool Add(string soKey, ScriptableObject soValue)
+        public bool Init()
         {
-            if (_setting is null)
-                return false;
+            _setting = Resources.Load<DataSetting>($"{nameof(DataSetting)}.asset");
+            return _setting;
+        }
+
+        public bool Fina()
+        {
+            if (!_setting) return false;
+            Resources.UnloadAsset(_setting);
+            return true;
+        }
+
+        public DataSetting Setting()
+        {
+            if (!_setting) return null;
+            return _setting;
+        }
+        
+        public bool Add(string soKey, object soValue)
+        {
+            if (_setting is null) return false;
 
             var data = new DataTable()
             {
@@ -55,8 +73,7 @@ namespace Phantom
 
         public bool Remove(string soKey)
         {
-            if (_setting is null)
-                return false;
+            if (_setting is null) return false;
 
             var data = _setting.list.Find(x => x.key == soKey);
             if (data is null)
@@ -65,10 +82,9 @@ namespace Phantom
             return _setting.list.Remove(data);
         }
     
-        public bool Remove(ScriptableObject soValue)
+        public bool Remove(object soValue)
         {
-            if (_setting is null)
-                return false;
+            if (_setting is null) return false;
         
             var data = _setting.list.Find(x => x.value == soValue);
             if (data is null)
@@ -77,16 +93,15 @@ namespace Phantom
             return _setting.list.Remove(data);
         }
     
-        public ScriptableObject Find(string key)
+        public T Find<T>(string key) where T : Object 
         {
-            if (_setting is null)
+            if (_setting is null) return null;
+
+            var data = _setting.list.Find(x => x.key == key);
+            if (data is null)
                 return null;
 
-            var setting = _setting.list.Find(x => x.key == key);
-            if (setting is null)
-                return null;
-
-            return setting.value;
+            return (T)data.value;
         }
 
         #endregion

@@ -29,6 +29,7 @@ namespace Phantom
                 this.isNewFrame = false;
                 return this;
             }
+            
             if (this.nextEventIsNew && type != EventType.Repaint)
             {
                 ++this.frameCount;
@@ -36,6 +37,7 @@ namespace Phantom
                 this.isNewFrame = true;
                 return this;
             }
+            
             this.isNewFrame = false;
             return this;
         }

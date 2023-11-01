@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 
 namespace Phantom
 {
@@ -7,6 +6,6 @@ namespace Phantom
     public class DataTable
     {
         public string key;
-        public ScriptableObject value;
+        public object value;
     }
 }

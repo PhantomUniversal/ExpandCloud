@@ -5,6 +5,12 @@ namespace Phantom
 {
     public static class PhantomColor
     {
+        
+        public static readonly Color HighlightTextColor = EditorGUIUtility.isProSkin ? new Color(1f, 1f, 1f, 1f) : new Color(0.0f, 0.0f, 0.0f, 1f);
+        
+        
+        
+        
         public static readonly Color DarkEditorBackground = EditorGUIUtility.isProSkin ? new Color(0.192f, 0.192f, 0.192f, 1f) : new Color(0.0f, 0.0f, 0.0f, 0.0f);
         
         public static readonly Color LayoutDefaultColor = new Color(0.338f, 0.338f, 0.338f, 1f);
@@ -12,6 +18,10 @@ namespace Phantom
         public static readonly Color SolidColor = EditorGUIUtility.isProSkin ? new Color(0.1f, 0.1f, 0.1f, 1f) : new Color(0.338f, 0.338f, 0.338f, 1f);
         
         public static readonly Color BackgroundColor = EditorGUIUtility.isProSkin ? new Color(0.11f, 0.11f, 0.11f, 0.8f) : new Color(0.38f, 0.38f, 0.38f, 0.6f);
+        
+        
+        
+        
         
         
         
@@ -43,7 +53,7 @@ namespace Phantom
         /// <summary>Highlighted Button Color.</summary>
         public static readonly Color HighlightedButtonColor = EditorGUIUtility.isProSkin ? new Color(0.0f, 1f, 0.0f, 1f) : new Color(0.0f, 1f, 0.0f, 1f);
         /// <summary>Highlight text color.</summary>
-        public static readonly Color HighlightedTextColor = EditorGUIUtility.isProSkin ? new Color(1f, 1f, 1f, 1f) : new Color(0.0f, 0.0f, 0.0f, 1f);
+        
         /// <summary>Highlight property color.</summary>
         public static readonly Color HighlightPropertyColor = EditorGUIUtility.isProSkin ? new Color(1f, 1f, 1f, 0.6f) : new Color(0.0f, 0.0f, 0.0f, 0.6f);
         /// <summary>List item hover color for every other item.</summary>
