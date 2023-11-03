@@ -1,6 +1,7 @@
 ﻿#if UNITY_EDITOR
 
 using UnityEditor;
+using UnityEditor.AnimatedValues;
 using UnityEngine;
 
 namespace Phantom.Callback
@@ -54,129 +55,57 @@ namespace Phantom.Callback
     
     [CustomEditor(typeof(CallbackManager), true)]
     [CanEditMultipleObjects]
-    public class CallbackManagerInspector : Editor
+    public class CallbackManagerInspector : PhantomGUIEditorBase
     {
 
         #region VARIABLE
 
         private bool _callbackListEnable;
-        private CallbackAttribute _callbackListAttribute;
-        private GUIContent _callbackListKeyLabel;
-        private GUIContent _callbackListValueLabel;
-        private float _callbackListKeyLabelWidth;
-        private float _callbackListValueHeight;
         
         #endregion
         
         
 
-        #region LIFECYCLE
+        #region CALLBACK
 
-        private void Awake()
-        {
-            _callbackListAttribute ??= new CallbackAttribute();
-            _callbackListKeyLabel = new GUIContent(_callbackListAttribute.keyLabel);
-            _callbackListValueLabel = new GUIContent(_callbackListAttribute.valueLabel);
-            _callbackListKeyLabelWidth = EditorStyles.label.CalcSize(_callbackListKeyLabel).x + 20f;
-            _callbackListValueHeight = EditorStyles.label.CalcSize(_callbackListValueLabel).x + 20f;
-        }
-
-        private void OnEnable()
+        protected override void OnOpen()
         {
             _callbackListEnable = EditorPrefs.GetBool("CALLBACK_LIST_ENABLE");
         }
 
-        private void OnDisable()
+        protected override void OnClose()
         {
             EditorPrefs.SetBool("CALLBACK_LIST_ENABLE", _callbackListEnable);
         }
-        
-        public override void OnInspectorGUI()
+
+        protected override void OnDraw()
         {
-            serializedObject.Update();
-            DrawPropertiesExcluding(serializedObject, new string[] { "m_Script" });
-            
             // ==================================================
             // [ Layout ]
             // ==================================================
             CallbackManager callback = (CallbackManager)target;
             EditorGUI.BeginChangeCheck();
 
-            Rect foldoutRect = PhantomEditorGUI.BeginVertical();
-            _callbackListEnable = PhantomEditorGUI.Foldout(_callbackListEnable, "Callback");
-            PhantomEditorGUI.EndVertical();
+            PhantomGUIEditor.BeginIndentedVertical();
             
-            Rect callbackFoldoutRect = EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.Height(20));
-            {
-                // Rect callbackAddRect = new Rect(callbackFoldoutRect.xMax, callbackFoldoutRect.y, callbackFoldoutRect.height, callbackFoldoutRect.height);
-                // if (GUI.Button(callbackAddRect, "+", PhantomGUIStyle.FieldButtonStyle))
-                // {
-                //     Debug.Log("Call");
-                // }
-            }
-            EditorGUILayout.EndVertical();
+            // Foldout
+            _callbackListEnable = PhantomGUIEditor.Foldout(_callbackListEnable, "Callback");
             
-            // Rect callbackListBackgroundRect = EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.Height(20));
-            // {
-            //     PhantomEditorGUI.DrawSolidRect(callbackListBackgroundRect.AlignTop(1f), PhantomColor.SolidColor);
-            //     PhantomEditorGUI.DrawSolidRect(callbackListBackgroundRect, PhantomColor.BoxBackgroundColor);
-            //     
-            //     if (_callbackListEnable)
-            //     {
-            //         Rect tagRect = EditorGUILayout.BeginHorizontal();
-            //         {
-            //             tagRect.height = callbackListRect.height;
-            //             PhantomEditorGUI.DrawSolidRect(tagRect.AlignLeft(1f), PhantomColor.SolidColor);
-            //             PhantomEditorGUI.DrawSolidRect(tagRect.AlignRight(1f), PhantomColor.SolidColor);
-            //             
-            //             Rect keyRect = new Rect(callbackListRect.xMin, callbackListRect.yMax, callbackListRect.width * 0.5f, callbackListRect.height);
-            //             Rect valueRect = new Rect(callbackListRect.xMin + (callbackListRect.width * 0.5f), callbackListRect.yMax, callbackListRect.width * 0.5f, callbackListRect.height);
-            //             if (Event.current.type == EventType.Repaint)
-            //             {
-            //                 GUI.Label(keyRect, _callbackListKeyLabel, PhantomGUIStyle.LabelCenter);
-            //                 GUI.Label(valueRect, _callbackListKeyLabel, PhantomGUIStyle.LabelCenter);
-            //                 PhantomEditorGUI.DrawSolidRect(tagRect.AlignBottom(1f), PhantomColor.SolidColor);
-            //             }
-            //             
-            //             // EditorGUILayout.LabelField("Key", PhantomGUIStyle.LabelBoxStyle);
-            //             // EditorGUILayout.LabelField("Value", PhantomGUIStyle.LabelBoxStyle);
-            //         }
-            //         EditorGUILayout.EndHorizontal();
-            //
-            //         // if (Callback.Use)
-            //         // {
-            //         //     GUILayout.Space(4f);
-            //         //     
-            //         //     foreach (var option in Callback.Containers.Keys)
-            //         //     {
-            //         //         if (GUILayout.Button(option.Uid, PhantomGUIStyle.ButtonStyle, GUILayout.ExpandWidth(true), GUILayout.Height(40f)))
-            //         //         {
-            //         //             //_uid = option.Uid;
-            //         //             Debug.Log($"UID : {option.Uid}\n Category : {option.Category}");
-            //         //         }
-            //         //     }
-            //         //     
-            //         //     GUILayout.Space(4f);
-            //         // }
-            //         // else
-            //         // {
-            //         //     EditorGUILayout.HelpBox("Callback is not exists", MessageType.Info);
-            //         // }
-            //     }
-            // }
-            // EditorGUILayout.EndVertical();
+            // FadeGroup
+            PhantomGUIEditor.BeginFadeGroup(_callbackListEnable);
+            EditorGUILayout.LabelField("");
+            PhantomGUIEditor.EndFadeGroup();
             
+            PhantomGUIEditor.EndIndentedVertical();
             
             if (EditorGUI.EndChangeCheck())
             {
                 EditorUtility.SetDirty(callback);
             }
-            
-            serializedObject.ApplyModifiedProperties();
         }
         
         #endregion
-        
+
     }
 }
 

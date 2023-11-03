@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Phantom
 {
-    public static class PhantomColor
+    public static class PhantomGUIColor
     {
         
         public static readonly Color HighlightTextColor = EditorGUIUtility.isProSkin ? new Color(1f, 1f, 1f, 1f) : new Color(0.0f, 0.0f, 0.0f, 1f);
