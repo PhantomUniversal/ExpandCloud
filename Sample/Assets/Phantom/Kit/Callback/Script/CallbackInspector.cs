@@ -1,7 +1,6 @@
 ﻿#if UNITY_EDITOR
 
 using UnityEditor;
-using UnityEditor.AnimatedValues;
 using UnityEngine;
 
 namespace Phantom.Callback
@@ -93,7 +92,10 @@ namespace Phantom.Callback
             
             // FadeGroup
             PhantomGUIEditor.BeginFadeGroup(_callbackListEnable);
-            EditorGUILayout.LabelField("");
+            if (_callbackListEnable)
+            {
+                
+            }
             PhantomGUIEditor.EndFadeGroup();
             
             PhantomGUIEditor.EndIndentedVertical();

@@ -11,12 +11,27 @@ namespace Phantom
         // ==================================================
         public static void DrawBorderRect(Rect rect)
         {
+            
             EditorGUI.DrawRect(PhantomGUIExtension.Left(rect), PhantomGUIColor.BorderColor);
             EditorGUI.DrawRect(PhantomGUIExtension.Right(rect), PhantomGUIColor.BorderColor);
             EditorGUI.DrawRect(PhantomGUIExtension.Top(rect), PhantomGUIColor.BorderColor);
             EditorGUI.DrawRect(PhantomGUIExtension.Bottom(rect), PhantomGUIColor.BorderColor);
         }
-        
+
+        public static void DrawSolidRect(Rect rect, Color color, bool isPlaymode = true)
+        {
+            if (Event.current.type != EventType.Repaint)
+                return;
+
+            if (isPlaymode)
+            {
+                EditorGUI.DrawRect(rect, color);    
+            }
+            else
+            {
+                GUI.DrawTexture(rect, (Texture) EditorGUIUtility.whiteTexture);
+            }
+        }
         
         // ==================================================
         // [ Draw ]
@@ -69,10 +84,11 @@ namespace Phantom
         // ==================================================
         // [ FadeGroup ]
         // ==================================================
-        public static void BeginFadeGroup(bool isVisible)
+        public static bool BeginFadeGroup(bool isVisible)
         {
             EditorGUILayout.BeginFadeGroup(PhantomGUIUtility.Fade(isVisible));
             PhantomGUIUtility.RequestRepaint();
+            return isVisible;
         }
 
         public static void EndFadeGroup()
@@ -116,8 +132,15 @@ namespace Phantom
                 GUI.enabled = false;
                 PhantomGUIHelper.ResetFocusControl();
             }
+
+            rect.height += 5f;
+            PhantomGUIUtility.Padding(rect.height);
             
             isVisible = EditorGUI.Foldout(rect, isVisible, label, style);
+            if (isVisible)
+            {
+                DrawSolidRect(PhantomGUIExtension.Bottom(rect), PhantomGUIColor.BorderColor);    
+            }
             
             if(containEnable)
                 PhantomGUIHelper.PopFoldoutColor();

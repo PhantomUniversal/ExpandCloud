@@ -56,6 +56,7 @@ namespace Phantom
                 {
                     _foldout = new(EditorStyles.foldout)
                     {
+                        alignment = TextAnchor.MiddleLeft,
                         fixedWidth = 0.0f,
                         fixedHeight = 0.0f,
                         stretchWidth = true,

@@ -7,6 +7,14 @@ namespace Phantom
     public static class PhantomGUIUtility
     {
 
+        #region Mode
+
+        
+
+        #endregion
+        
+        
+        
         #region OBJECT
 
         public static void PingObject(Object obj)
@@ -62,7 +70,6 @@ namespace Phantom
             return _fadeEnable.faded;
         }
         
-        
         #endregion
         
         
@@ -99,5 +106,18 @@ namespace Phantom
         
         #endregion
 
+
+
+        #region PADDING
+
+        public static void Padding(float height)
+        {
+            // rect.y += height;
+            EditorGUILayout.Space(height);
+            RequestRepaint();
+        }
+
+        #endregion
+        
     }
 }
